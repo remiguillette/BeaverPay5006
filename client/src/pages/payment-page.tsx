@@ -3,7 +3,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { PaymentMethodSelector } from "@/components/payment/payment-method-selector";
 import { CreditCardForm } from "@/components/payment/credit-card-form";
 import { OrderSummary } from "@/components/payment/order-summary";
-import { SecurityBadges } from "@/components/payment/security-badges";
+import { PaymentLogos } from "@/components/payment/payment-logos";
 import { useToast } from "@/hooks/use-toast";
 import { usePaymentForm } from "@/hooks/use-payment-form";
 
@@ -98,8 +98,8 @@ const PaymentPage: FC = () => {
                   </div>
                 )}
                 
-                {/* Security indicators */}
-                <SecurityBadges />
+                {/* Logos de paiement et badges de sécurité */}
+                <PaymentLogos />
               </CardContent>
             </Card>
           </div>
