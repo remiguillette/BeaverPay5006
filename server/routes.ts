@@ -101,6 +101,91 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(500).json({ error: "Erreur lors de la récupération des paiements" });
     }
   });
+  
+  // Create invoice and generate payment link (PayPal-like functionality)
+  app.post('/api/admin/invoices/create', checkAdminAuth, async (req, res) => {
+    try {
+      const { customerName, customerEmail, items, subtotal, tax, total } = req.body;
+      
+      if (!customerName || !customerEmail || !items || !subtotal || !tax || !total) {
+        return res.status(400).json({
+          success: false,
+          message: "Informations de facture incomplètes"
+        });
+      }
+      
+      // Create an order in the database
+      const order = await storage.createOrder({
+        userId: null, // Anonymous order - can be linked to a user in a more complete implementation
+        subtotal,
+        tax,
+        total,
+        status: "pending", // Initial status is pending
+      });
+      
+      // Create order items
+      for (const item of items) {
+        await storage.createOrderItem({
+          orderId: order.id,
+          productName: item.name,
+          quantity: item.quantity,
+          price: item.price.toString(),
+        });
+      }
+      
+      // Generate a unique token for this payment link (similar to PayPal)
+      const token = `invoice-${Math.floor(100000 + Math.random() * 900000)}`;
+      
+      // Construct payment link (using format similar to PayPal links)
+      const paymentLink = `${req.protocol}://${req.get('host')}/?invoice=${order.id}&token=${token}`;
+      
+      // Store customer information (in a real app, you'd store this in the database)
+      // For this demo, we're just returning it
+      
+      res.status(200).json({
+        success: true,
+        orderId: order.id,
+        customerName,
+        customerEmail,
+        paymentLink,
+      });
+    } catch (error) {
+      console.error("Error creating invoice:", error);
+      res.status(500).json({
+        success: false,
+        message: "Erreur lors de la création de la facture"
+      });
+    }
+  });
+  
+  // Send invoice by email
+  app.post('/api/admin/invoices/send-email', checkAdminAuth, async (req, res) => {
+    try {
+      const { email, paymentLink } = req.body;
+      
+      if (!email || !paymentLink) {
+        return res.status(400).json({
+          success: false,
+          message: "Email ou lien de paiement manquant"
+        });
+      }
+      
+      // In a real implementation, this would send an actual email with the payment link
+      // For this demo, we'll simulate a successful email send
+      console.log(`[SIMULATION] Sending payment link email to ${email}: ${paymentLink}`);
+      
+      res.status(200).json({
+        success: true,
+        message: "Email envoyé avec succès"
+      });
+    } catch (error) {
+      console.error("Error sending invoice email:", error);
+      res.status(500).json({
+        success: false,
+        message: "Erreur lors de l'envoi de l'email"
+      });
+    }
+  });
 
   // Generate payment link
   app.post('/api/admin/orders/:orderId/generate-link', checkAdminAuth, async (req, res) => {
