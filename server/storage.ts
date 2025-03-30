@@ -8,6 +8,9 @@ import {
 // modify the interface with any CRUD methods
 // you might need
 
+import session from "express-session";
+import createMemoryStore from "memorystore";
+
 export interface IStorage {
   getUser(id: number): Promise<User | undefined>;
   getUserByUsername(username: string): Promise<User | undefined>;
@@ -26,6 +29,10 @@ export interface IStorage {
   createPayment(payment: InsertPayment): Promise<Payment>;
   getPayment(id: number): Promise<Payment | undefined>;
   getPaymentsByOrderId(orderId: number): Promise<Payment[]>;
+  getAllPayments(): Promise<Payment[]>;
+  
+  // Session store
+  sessionStore: session.Store;
 }
 
 export class MemStorage implements IStorage {
@@ -38,6 +45,7 @@ export class MemStorage implements IStorage {
   currentOrderId: number;
   currentOrderItemId: number;
   currentPaymentId: number;
+  sessionStore: session.Store;
 
   constructor() {
     this.users = new Map();
@@ -49,6 +57,12 @@ export class MemStorage implements IStorage {
     this.currentOrderId = 1;
     this.currentOrderItemId = 1;
     this.currentPaymentId = 1;
+    
+    // Initialize the session store
+    const MemoryStore = createMemoryStore(session);
+    this.sessionStore = new MemoryStore({
+      checkPeriod: 86400000, // Prune expired entries every 24h
+    });
   }
 
   // User methods
@@ -80,7 +94,7 @@ export class MemStorage implements IStorage {
       subtotal: orderData.subtotal,
       tax: orderData.tax,
       total: orderData.total,
-      status: orderData.status,
+      status: orderData.status || "pending",
       createdAt: now
     };
     
@@ -129,10 +143,10 @@ export class MemStorage implements IStorage {
       id,
       orderId: paymentData.orderId,
       amount: paymentData.amount,
-      currency: paymentData.currency,
+      currency: paymentData.currency || 'CAD',
       paymentMethod: paymentData.paymentMethod,
       status: paymentData.status,
-      transactionId: paymentData.transactionId,
+      transactionId: paymentData.transactionId || null,
       createdAt: now
     };
     
@@ -148,6 +162,10 @@ export class MemStorage implements IStorage {
     return Array.from(this.payments.values()).filter(
       (payment) => payment.orderId === orderId
     );
+  }
+  
+  async getAllPayments(): Promise<Payment[]> {
+    return Array.from(this.payments.values());
   }
 }
 
