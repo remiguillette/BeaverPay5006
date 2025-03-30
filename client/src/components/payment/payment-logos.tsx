@@ -17,17 +17,24 @@ export const PaymentLogos: FC = () => {
           </div>
 
           {/* Mastercard Logo */}
-          <div className="h-10 bg-[#EB001B] px-4 py-2 rounded flex items-center justify-center">
+          <div className="h-10 bg-[#EB001B] px-6 py-2 rounded flex items-center justify-center">
             <div className="flex items-center">
-              <div className="w-6 h-6 rounded-full bg-[#EB001B] mr-1"></div>
-              <div className="w-6 h-6 rounded-full bg-[#F79E1B] ml-1 relative right-3"></div>
-              <span className="text-white font-bold ml-1">Mastercard</span>
+              <div className="w-6 h-6 rounded-full bg-[#EB001B] mr-1 border border-white"></div>
+              <div className="w-6 h-6 rounded-full bg-[#F79E1B] ml-1 relative right-3 border border-white"></div>
+              <span className="text-white font-bold ml-1 bg-[#EB001B]">Mastercard</span>
             </div>
           </div>
           
-          {/* Interac Logo */}
-          <div className="h-10 bg-[#2273AA] px-4 py-2 rounded flex items-center justify-center">
-            <span className="text-white font-bold">Interac</span>
+          {/* Interac e-Transfer Logo */}
+          <div className="h-10 rounded flex items-center justify-center overflow-hidden">
+            <div className="flex items-stretch h-full">
+              <div className="bg-[#F4B728] px-3 py-2 flex items-center">
+                <span className="text-black font-bold">Interac</span>
+              </div>
+              <div className="bg-[#626262] px-3 py-2 flex items-center">
+                <span className="text-white font-bold">e-Transfer</span>
+              </div>
+            </div>
           </div>
         </div>
       </div>
