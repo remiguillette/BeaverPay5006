@@ -11,11 +11,7 @@ import { setupAuth } from "./auth";
 const ADMIN_USERNAME = "admin";
 const ADMIN_PASSWORD = "admin123"; // Simplifié pour les tests
 
-// Initialize session store
-const MemoryStore = createMemoryStore(session);
-const sessionStore = new MemoryStore({
-  checkPeriod: 86400000 // Prune expired entries every 24h
-});
+// Initialize session store - this is now handled in storage.ts to ensure consistency
 
 // Extend express session
 declare module 'express-session' {

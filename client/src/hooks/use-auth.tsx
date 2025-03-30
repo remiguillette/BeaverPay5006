@@ -30,6 +30,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   } = useQuery<SelectUser | null, Error>({
     queryKey: ["/api/user"],
     queryFn: getQueryFn({ on401: "returnNull" }),
+    // S'assurer que la valeur par défaut est null pour éviter l'erreur de type undefined
+    initialData: null,
   });
 
   const loginMutation = useMutation({
