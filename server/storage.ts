@@ -53,7 +53,7 @@ export class MemStorage implements IStorage {
     this.orderItems = new Map();
     this.payments = new Map();
     
-    this.currentUserId = 1;
+    this.currentUserId = 2; // Starting from 2 for user ID (1 is reserved for test user)
     this.currentOrderId = 1;
     this.currentOrderItemId = 1;
     this.currentPaymentId = 1;
@@ -62,6 +62,13 @@ export class MemStorage implements IStorage {
     const MemoryStore = createMemoryStore(session);
     this.sessionStore = new MemoryStore({
       checkPeriod: 86400000, // Prune expired entries every 24h
+    });
+    
+    // Add test user
+    this.users.set(1, {
+      id: 1,
+      username: "test",
+      password: "pbkdf2$sha512$100000$c9c5d61e240448a7ea7b5955856557fb$0cf542c832f824f968b21cf8b8e2ff16665f5a2d63f3b5e8ea2aae0338bc247c9c2d1ba48fc1c5de40b94f5da603252cb00cd1e82e95705c28e404c66db1a0db", // "test123"
     });
   }
 

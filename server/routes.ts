@@ -9,7 +9,7 @@ import { setupAuth } from "./auth";
 
 // Admin credentials - in a real app, these would be stored securely
 const ADMIN_USERNAME = "admin";
-const ADMIN_PASSWORD = "secure_password";
+const ADMIN_PASSWORD = "admin123"; // Simplifié pour les tests
 
 // Initialize session store
 const MemoryStore = createMemoryStore(session);
